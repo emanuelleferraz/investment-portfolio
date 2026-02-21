@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
-import { investmentService, type Investment } from '@/service/api';
+import { investmentService, type Investment, type AssetType } from '@/service/api';
 import { Bell, Search, Plus, Trash2, Edit } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Sidebar from "@/components/SideBar.tsx";
 import AssetForm from "@/components/AssetForm";
-import DeleteConfirmModal from "@/components/DeleteConfirmModal"; // Importando o novo modal
+import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 
 const Ativos = () => {
     const [investments, setInvestments] = useState<Investment[]>([]);
+    const [filterType, setFilterType] = useState<AssetType | 'TODOS'>('TODOS'); // Novo estado de filtro
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAsset, setSelectedAsset] = useState<Investment | null>(null);
 
-    // Estados para o modal de exclusão
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [assetToDelete, setAssetToDelete] = useState<Investment | null>(null);
 
@@ -30,13 +30,16 @@ const Ativos = () => {
         }
     };
 
-    // Abre o modal de confirmação em vez do confirm nativo
+    // Lógica de filtragem
+    const filteredInvestments = filterType === 'TODOS'
+        ? investments
+        : investments.filter(inv => inv.type === filterType);
+
     const handleDeleteClick = (inv: Investment) => {
         setAssetToDelete(inv);
         setIsDeleteModalOpen(true);
     };
 
-    // Executa a exclusão real
     const handleConfirmDelete = async () => {
         if (!assetToDelete?.id) return;
         try {
@@ -86,6 +89,23 @@ const Ativos = () => {
                         </button>
                     </div>
 
+                    {/* Filtros por Tipo */}
+                    <div className="flex gap-2">
+                        {['TODOS', 'ACAO', 'CRIPTO', 'FUNDO', 'RENDA_FIXA', 'OUTRO'].map((type) => (
+                            <button
+                                key={type}
+                                onClick={() => setFilterType(type as any)}
+                                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all border ${
+                                    filterType === type
+                                        ? 'bg-pink-600 border-pink-600 text-white'
+                                        : 'border-zinc-800 text-zinc-500 hover:border-zinc-600'
+                                }`}
+                            >
+                                {type}
+                            </button>
+                        ))}
+                    </div>
+
                     <Card className="bg-[#111] border-zinc-800">
                         <CardHeader>
                             <CardTitle className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Listagem Detalhada</CardTitle>
@@ -103,7 +123,7 @@ const Ativos = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {investments.map((inv) => (
+                                    {filteredInvestments.map((inv) => (
                                         <TableRow key={inv.id} className="border-zinc-800 hover:bg-zinc-900/40 transition-colors">
                                             <TableCell className="font-black text-pink-500 text-sm">{inv.symbol}</TableCell>
                                             <TableCell className="text-zinc-300 text-[11px] font-bold">{inv.type}</TableCell>
@@ -132,10 +152,10 @@ const Ativos = () => {
                                             </TableCell>
                                         </TableRow>
                                     ))}
-                                    {investments.length === 0 && (
+                                    {filteredInvestments.length === 0 && (
                                         <TableRow>
                                             <TableCell colSpan={6} className="text-center py-10 text-zinc-500 italic text-sm border-none">
-                                                Nenhum ativo cadastrado.
+                                                Nenhum ativo encontrado para este filtro.
                                             </TableCell>
                                         </TableRow>
                                     )}
@@ -146,7 +166,6 @@ const Ativos = () => {
                 </div>
             </main>
 
-            {/* Inclusão do Formulário Modal */}
             <AssetForm
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
@@ -154,7 +173,6 @@ const Ativos = () => {
                 editingInvestment={selectedAsset}
             />
 
-            {/* Inclusão do Modal de Exclusão Bonitinho */}
             <DeleteConfirmModal
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
