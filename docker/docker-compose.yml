@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: investment_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: investments-admin
+      POSTGRES_PASSWORD: wallet123
+      POSTGRES_DB: investment_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
