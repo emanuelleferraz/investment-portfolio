@@ -16,7 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/investments")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // -> para o react
+@CrossOrigin(origins = "http://localhost:5173") // -> para o react
 public class InvestmentController {
     private final InvestmentService service;
 
