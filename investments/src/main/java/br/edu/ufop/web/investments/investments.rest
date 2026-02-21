@@ -1,0 +1,57 @@
+### URL
+@baseUrl = http://localhost:5000
+
+###
+
+### ID-Exemplo
+@assetId = 0deaff2e-df95-43fc-b7c3-3f6c067de0e4
+
+###
+
+### CREATE ATIVO
+POST {{baseUrl}}/investments
+Content-Type: application/json
+
+{
+  "type": "CRIPTO",
+  "symbol": "btc",
+  "quantity": 0.05,
+  "purchasePrice": 350000.00,
+  "purchaseDate": "2025-12-31"
+}
+
+###
+
+### GET ATIVOS
+GET {{baseUrl}}/investments
+
+###
+
+### GET TYPE
+GET {{baseUrl}}/investments?type=CRIPTO
+
+###
+
+### GET SUMMARY
+GET {{baseUrl}}/investments/summary
+
+###
+
+### UPDATE ATIVO
+PUT {{baseUrl}}/investments/{{assetId}}
+Content-Type: application/json
+
+{
+  "type": "CRIPTO",
+  "symbol": "BTC",
+  "quantity": 0.05,
+  "purchasePrice": 350000.00,
+  "purchaseDate": "2025-12-31"
+}
+
+###
+
+### DELETE ATIVO
+DELETE {{baseUrl}}/investments/{{assetId}}
+
+###
