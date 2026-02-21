@@ -47,5 +47,4 @@ npm run dev
 | GET    | /investments?type=CRIPTO       | Filtrar por tipo de ativo                 |
 | PUT    | /investments/{id}              | Atualizar informações de um ativo         |
 | DELETE | /investments/{id}              | Remover um ativo da carteira              |
-| PATCH  | /investments/{id}/market-price | Atualizar o preço atual de mercado        |
 | GET    | /investments/summary           | Obter resumo da carteira                  |
